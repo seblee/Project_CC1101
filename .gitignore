@@ -10,6 +10,7 @@
 *.idb
 *.ilk
 *.old
+*.crf
 build
 Debug
 documentation/html
@@ -34,3 +35,4 @@ ncscope.*
 tags
 
 .vscode
+Obj
