@@ -76,6 +76,7 @@ uint8_t CC1101_Read_Reg( uint8_t Addr );
 void CC1101_Read_Multi_Reg( uint8_t Addr, uint8_t *pReadBuff, uint8_t ReadSize );
 uint8_t CC1101_Read_Status( uint8_t Addr );
 void CC1101_Set_Mode( CC1101_ModeType Mode );
+void CC1101_Set_RX_Mode(void);
 void CC1101_Set_Idle_Mode( void );
 void C1101_WOR_Init( void );
 void CC1101_Set_Address( uint8_t Address, CC1101_AddrModeType AddressMode);

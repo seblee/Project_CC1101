@@ -193,6 +193,18 @@ void CC1101_Set_Mode(CC1101_ModeType Mode)
     while (0 != CC1101_GET_GDO0_STATUS())
         ; //等待发送 或 接收开始
 }
+/**
+  * @brief :CC1101发送接收模式设置
+  * @param :
+  *			@Mode RX_MODE，接收模式
+  * @note  :无
+  * @retval:寄存器状态
+  */
+void CC1101_Set_RX_Mode(void)
+{
+    CC1101_Write_Reg(CC1101_IOCFG0, 0x46);
+    CC1101_Write_Cmd(CC1101_SRX);
+}
 
 /**
   * @brief :CC1101进入空闲模式
@@ -364,6 +376,7 @@ uint8_t CC1101_Rx_Packet(uint8_t *RxBuff)
     uint8_t l_PktLen = 0;
     uint8_t l_Status[2] = {0};
     uint16_t l_RxWaitTimeout = 0;
+    uint8_t temp[255];
 
     while (0 == CC1101_GET_GDO0_STATUS()) //等待接收完成
     {
@@ -395,8 +408,15 @@ uint8_t CC1101_Rx_Packet(uint8_t *RxBuff)
         CC1101_Read_Multi_Reg(CC1101_RXFIFO, RxBuff, l_PktLen); //读取数据
         CC1101_Read_Multi_Reg(CC1101_RXFIFO, l_Status, 2);      //读取数据包最后两个额外字节，后一个为CRC标志位
 
-        CC1101_Clear_RxBuffer();
-
+        while (0 != CC1101_GET_GDO2_STATUS())
+        {
+            l_Status[0] = CC1101_Get_RxCounter();
+            if (l_Status[0] == 0)
+                break;
+            /* code */
+            CC1101_Read_Multi_Reg(CC1101_RXFIFO, temp, l_Status[0] < 250 ? l_Status[0] : 250); //读取数据
+        }
+        // CC1101_Clear_RxBuffer();
         if (l_Status[1] & CRC_OK)
         {
             return l_PktLen;
